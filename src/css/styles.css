@@ -182,6 +182,9 @@ body {
 
 .center {
   flex: 1.5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   text-align: center;
   background: #2a2d3a;
   border-radius: 8px;

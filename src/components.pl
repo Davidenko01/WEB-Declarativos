@@ -19,7 +19,7 @@ pagina_inicio -->
         div([class='container'],
             [ h1([class='title'], 'ESCAPA POR EL PUENTE!'),
               p([class='description'],
-                'ESCAPA DE ZURG! CUIDADO, EL PUENTE ES OSCURO Y MUY DÉBIL'),
+                'ESCAPA DE ZURG! CUIDADO, EL PUENTE ES OSCURO Y MUY DEBIL'),
               h2([class='subtitle'], 'JUGUETES DE ANDY:'),
               div([class='characters-container'],
                   [ \personaje_card('woody', WoodyPath, 'woody-color', 'EL SHERIFF', '10 minutos'),
