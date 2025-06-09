@@ -4,8 +4,8 @@
 :- use_module(library(http/http_dispatch)).
 :- use_module(library(http/http_files)).
 :- use_module(library(http/html_write)).
+:- use_module(library(http/http_json)).
 :- use_module(components).
-:- use_module(juguetes). 
 
 server(Port) :-
     http_server(http_dispatch, [port(Port)]).
@@ -16,6 +16,7 @@ server(Port) :-
 :- http_handler('/assets/', serve_files_in('assets'), [prefix]).
 :- http_handler('/css/', serve_files_in('css'), [prefix]).
 :- http_handler('/html/', serve_files_in('html'), [prefix]).
+:- http_handler('/js/', serve_files_in('js'), [prefix]).
 
 serve_files_in(Dir, Request) :-
     http_reply_from_files(Dir, [], Request).

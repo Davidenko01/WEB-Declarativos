@@ -1,7 +1,6 @@
 :- module(juguetes, [movesJuguetes/1]).
 :- use_module(library(clpfd)).
 
-
 %%Tiempo que tarda cada juguete
 tiempo(buzz, 5).
 tiempo(woody,  10).

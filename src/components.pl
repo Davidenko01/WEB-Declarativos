@@ -6,6 +6,7 @@
 ]).
 
 :- use_module(library(http/html_write)).
+:- use_module(library(http/html_head)).
 :- use_module(juguetes).  % Asegurate de tener definidos los personajes en juguetes.pl
 
 % Página de inicio con las tarjetas de personajes
@@ -32,26 +33,25 @@ pagina_inicio -->
             ])
     ).
 
-% Página de cruce del puente
 pagina_carrera -->
-    html(
+    html([\html_requires(js('script.js')),
         div([class='container'],
             [ h1([class='title'], 'Problema del Cruce del Puente'),
               div([class='top-bar'],
                   [ p([], [strong('Tiempo usado: '), span([id=time], '0'), '/60 minutos']),
                     div([class='actions'],
                         [ button([id='solucion', onclick="resolver()"], 'Solucion automatica'),
-                          button([onclick="reiniciar()"], 'Reiniciar')
+                          button([onclick="reiniciarJuego()"], 'Reiniciar') % Added onclick for reset
                         ])
                   ]),
               div([class='content'],
                   [ div([class='side'],
-                        [ h2([], ['Lado Inicial ', span([id='linterna'], 'Linterna')]),
+                        [ h2([], ['Lado Inicial ', span([id='linterna'], 'Linterna')]), % Added id='linterna'
                           \lista_personajes(inicial)
                         ]),
                     div([class='center'],
                         [ div([class='bridge'], 'PUENTE'),
-                          button([id='cruzar', onclick="cruzarSeleccionados()"], 'Cruzar hacia la derecha'),
+                          button([id='cruzar'], 'Cruzar hacia la derecha'),
                           p([class='note'], 'Selecciona 1 o 2 personajes para cruzar')
                         ]),
                     div([class='side'],
@@ -60,9 +60,8 @@ pagina_carrera -->
                         ])
                   ])
             ])
-    ).
+    ]).
 
-% Lista de personajes
 lista_personajes(Lado) -->
     {
         personajes(Personajes),
@@ -72,17 +71,19 @@ lista_personajes(Lado) -->
         \render_personajes(Personajes, Lado)
     )).
 
-% Renderizado de personajes
 render_personajes([], _) --> [].
-render_personajes([personaje(Id, Nombre, Tiempo)|T], inicial) -->
+render_personajes([personaje(Id, Nombre, Tiempo)|T], Lado) --> % Modified to accept Lado for filtering
+    {
+        % Only render characters that are on the initial side initially
+        (Lado = inicial, member(Id, [buzz,woody,rex,hamm])) ; (Lado = final, fail) % Initially final side is empty
+    },
     html(li([class='personaje', 'data-id'=Id],
              [ span([class='circle'], ''),
                Nombre, span([class='tiempo'], Tiempo)
              ])),
-    render_personajes(T, inicial).
-render_personajes(_, final) --> [].
+    render_personajes(T, Lado).
 
-% Tarjeta individual de personaje
+
 personaje_card(Nombre, Imagen, ColorClass, Texto, Tiempo) -->
     html(
         div([class='card'],
@@ -93,7 +94,6 @@ personaje_card(Nombre, Imagen, ColorClass, Texto, Tiempo) -->
             ])
     ).
 
-% Mostrar los pasos de la solución
 mostrar_movimientos([]) --> [].
 mostrar_movimientos(['b-->'(A,B)|T]) -->
     {
@@ -114,15 +114,12 @@ mostrar_movimientos(['<--b'(A)|T]) -->
     ]),
     mostrar_movimientos(T).
 
-% Ruta a imágenes
 format_image_path(FileName, Path) :-
     format(atom(Path), '/assets/~w', [FileName]).
 
-% Personajes con sus tiempos, para armar la interfaz estática
 personajes([
     personaje(buzz, 'Buzz', '5 minutos'),
     personaje(woody, 'Woody', '10 minutos'),
     personaje(rex, 'Rex', '20 minutos'),
     personaje(hamm, 'Hamm', '25 minutos')
 ]).
-
