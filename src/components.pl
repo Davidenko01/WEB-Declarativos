@@ -1,4 +1,4 @@
-:- module(components, [pagina_inicio//0, pagina_carrera//0, personaje_card//5, mostrar_movimientos//1]).
+:- module(components, [pagina_inicio//0, pagina_carrera//0, personaje_card//5]).
 
 :- use_module(library(http/html_write)).
 :- use_module(juguetes).
@@ -25,48 +25,49 @@ pagina_inicio -->
               div([style='margin-top: 45px;'],
                   a([href='/carrera', class='button'],
                     'JUGAR'))
-                  
             ])
     ).
 
-  pagina_carrera -->
+pagina_carrera -->
     {
         movesJuguetes(Movimientos)
     },
     html(
-        div([class='container'],           
-            [ h1([class='title'], 'ESCAPA POR EL PUENTE!'),
-              p([class='description'],
-                  'ESCAPA DE ZURG! CUIDADO, EL PUENTE ES OSCURO Y MUY DEBIL'),
-               h2([class='subtitle'], 'SOLUCION PARA NUESTROS AMIGOS:'),
-               \mostrar_movimientos(Movimientos)
+        div([class='container'],
+            [ h1([class='title'], 'Problema del Cruce del Puente'),
+              div([class='controls'], [
+                  p([class='timer'], [
+                      'Tiempo usado: ', span([class='green'], '0'), '/60 minutos'
+                  ]),
+                  div([class='buttons'], [
+                      button([class='button'], 'Solucion automática'),
+                      button([class='button'], 'Reiniciar')
+                  ])
+              ]),
+              div([class='bridge-layout'], [
+                  div([class='lado-inicial'], [
+                      h3([], ['Lado Inicial ', span([class='linterna'], '🔦')]),
+                      \personaje_card('buzz', '/assets/buzz.png', 'circle', 'Buzz', '5 minutos'),
+                      \personaje_card('woody', '/assets/woody.png', 'circle', 'Woody', '10 minutos'),
+                      \personaje_card('rex', '/assets/rex.png', 'circle', 'Rex', '20 minutos'),
+                      \personaje_card('hamm', '/assets/hamm.png', 'circle', 'Hamm', '25 minutos')
+                  ]),
+
+                  div([class='puente'], [
+                      div([class='puente-img'], 'PUENTE'),
+                      div([class='accion-boton'], [
+                          button([class='button'], 'Cruzar hacia la derecha →'),
+                          p([class='seleccion'], 'Selecciona 1 o 2 personajes para cruzar')
+                      ])
+                  ]),
+
+                  div([class='lado-final'], [
+                      h3([], 'Lado Final'),
+                      p([], 'No hay personajes en este lado')
+                  ])
+              ])
             ])
-    ).  
-
-
-mostrar_movimientos([]) --> [].
-
-mostrar_movimientos(['b-->'(A,B)|T]) -->
-    {
-        format(atom(Txt), '~w y ~w', [A, B])
-    },
-    html([
-        h3('Cruzan por el puente:'),
-        h4(Txt)
-    ]),
-    mostrar_movimientos(T).
-
-mostrar_movimientos(['<--b'(A)|T]) -->
-    {
-        format(atom(Txt), '~w', [A])
-    },
-    html([
-        h3('Regresa a buscar un amigo:'),
-        h4(Txt)
-    ]),
-    mostrar_movimientos(T).
-
-
+    ).
 
 
 format_image_path(FileName, Path) :-
