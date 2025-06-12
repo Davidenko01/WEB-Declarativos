@@ -46,7 +46,11 @@ pagina_carrera -->
                   ]),
               div([class='content'],
                   [ div([class='side'],
-                        [ h2([], ['Lado Inicial ', span([id='linterna'], 'Linterna')]), % Added id='linterna'
+                        [ h2([], [
+                            'Lado Inicial ',
+                            span([id='linterna-izquierda'], ''),  % <-- Agrega este
+                            span([id='linterna'], 'Linterna')     % (puedes quitar este si no lo usas)
+                          ]),
                           \lista_personajes(inicial)
                         ]),
                     div([class='center'],
@@ -55,7 +59,10 @@ pagina_carrera -->
                           p([class='note'], 'Selecciona 1 o 2 personajes para cruzar')
                         ]),
                     div([class='side'],
-                        [ h2([], 'Lado Final'),
+                        [ h2([], [
+                            'Lado Final ',
+                            span([id='linterna-derecha'], '')     % <-- Agrega este
+                          ]),
                           \lista_personajes(final)
                         ])
                   ])
