@@ -17,12 +17,38 @@ document.addEventListener('DOMContentLoaded', () => {
   const spanLinternaDer = document.getElementById('linterna-derecha');
   const btnCruzar = document.getElementById('cruzar');
   const btnReiniciar = document.getElementById('reiniciar');
+  const btnResolver = document.getElementById('solucion');
+
+
 
   btnReiniciar.addEventListener('click', () => {
-  location.reload();
+    location.reload();
   });
 
 
+btnResolver.addEventListener('click', () => {
+    const pasos = [
+      ['buzz', 'woody'], // Cruzan -> 10
+      ['buzz'],          // Regresa -> 5
+      ['rex', 'hamm'],   // Cruzan -> 25
+      ['woody'],         // Regresa -> 10
+      ['buzz', 'woody']  // Cruzan -> 10
+    ];
+
+    function simularPaso(i) {
+      // Esperar antes de siguiente paso para que se actualice UI
+      setTimeout(() => simularPaso(i + 1), 1000); // tiempo simulado entre pasos
+       
+      if (i >= pasos.length) return;
+
+      seleccionados = pasos[i];
+      btnCruzar.click(); // Ejecuta la lógica del botón
+
+      
+    }
+
+    simularPaso(0);
+  });
 
   function bindClicks() {
     // Limpiar eventos para evitar duplicados
@@ -39,6 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
         el.addEventListener('click', () => toggleSeleccion(el, 1));
       });
     }
+    
+
+
+
   }
   bindClicks();
 
@@ -90,7 +120,9 @@ document.addEventListener('DOMContentLoaded', () => {
     seleccionados = [];
     bindClicks();
     actualizarUI();
-    verificarEstado();
+    setTimeout(verificarEstado() ,4000);
+    
+    //verificarEstado();
   });
 
   function actualizarUI() {
@@ -102,25 +134,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Cambiar texto del botón según la posición de la linterna
     btnCruzar.textContent = linterna === 'izquierda' ? 'Cruzar a la derecha' : 'Cruzar a la izquierda';
-}
+  }
 
   function verificarEstado() {
-  const personajesEnFinal = ulFinal.querySelectorAll('.personaje').length;
-  const totalPersonajes = Object.keys(tiempos).length;
+    const personajesEnFinal = ulFinal.querySelectorAll('.personaje').length;
+    const totalPersonajes = Object.keys(tiempos).length;
 
-  if (personajesEnFinal === totalPersonajes) {
-    // Todos cruzaron
-    if (tiempoTotal <= 60) {
-      alert('¡HAZ GANADO! Todos cruzaron en ' + tiempoTotal + ' minutos.');
-    } else {
-      // Esperar un momento para que no se superponga con otros alert
-      setTimeout(() => {
-        alert('Perdiste, se pasó del tiempo máximo (60 minutos). Tiempo total: ' + tiempoTotal);
-        location.reload();  // Reiniciar el juego automáticamente
-      }, 300);  // 300 ms de retraso
+    if (personajesEnFinal === totalPersonajes) {
+      // Todos cruzaron
+      if (tiempoTotal <= 60) {
+        setTimeout(() => { alert('¡HAS GANADO! Todos cruzaron en ' + tiempoTotal + ' minutos.') }, 300);
+      } else {
+        // Esperar un momento para que no se superponga con otros alert
+        setTimeout(() => { alert('Perdiste, se pasó del tiempo máximo (60 minutos). Tiempo total: ' + tiempoTotal);
+          location.reload();  // Reiniciar el juego automáticamente
+        }, 300);  // 300 ms de retraso
+      }
     }
   }
-}
 
 });
-
