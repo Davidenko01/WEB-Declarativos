@@ -16,6 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const spanLinternaIzq = document.getElementById('linterna-izquierda');
   const spanLinternaDer = document.getElementById('linterna-derecha');
   const btnCruzar = document.getElementById('cruzar');
+  const btnReiniciar = document.getElementById('reiniciar');
+
+  btnReiniciar.addEventListener('click', () => {
+  location.reload();
+  });
+
+
 
   function bindClicks() {
     // Limpiar eventos para evitar duplicados
@@ -83,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
     seleccionados = [];
     bindClicks();
     actualizarUI();
-
     verificarEstado();
   });
 
@@ -99,16 +105,22 @@ document.addEventListener('DOMContentLoaded', () => {
 }
 
   function verificarEstado() {
-    const personajesEnFinal = ulFinal.querySelectorAll('.personaje').length;
-    const totalPersonajes = Object.keys(tiempos).length;
+  const personajesEnFinal = ulFinal.querySelectorAll('.personaje').length;
+  const totalPersonajes = Object.keys(tiempos).length;
 
-    if (personajesEnFinal === totalPersonajes) {
-      // Todos cruzaron
-      if (tiempoTotal <= 60) {
-        alert('¡HAZ GANADO! Todos cruzaron en ' + tiempoTotal + ' minutos.');
-      } else {
+  if (personajesEnFinal === totalPersonajes) {
+    // Todos cruzaron
+    if (tiempoTotal <= 60) {
+      alert('¡HAZ GANADO! Todos cruzaron en ' + tiempoTotal + ' minutos.');
+    } else {
+      // Esperar un momento para que no se superponga con otros alert
+      setTimeout(() => {
         alert('Perdiste, se pasó del tiempo máximo (60 minutos). Tiempo total: ' + tiempoTotal);
-      }
+        location.reload();  // Reiniciar el juego automáticamente
+      }, 300);  // 300 ms de retraso
     }
   }
+}
+
 });
+

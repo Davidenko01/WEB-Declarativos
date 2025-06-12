@@ -41,7 +41,7 @@ pagina_carrera -->
                   [ p([], [strong('Tiempo usado: '), span([id=time], '0'), '/60 minutos']),
                     div([class='actions'],
                         [ button([id='solucion', onclick="resolver()"], 'Solucion automatica'),
-                          button([onclick="reiniciarJuego()"], 'Reiniciar') % Added onclick for reset
+                          button([id='reiniciar', onclick="reiniciar()"], 'Reiniciar') % Added onclick for reset
                         ])
                   ]),
               div([class='content'],

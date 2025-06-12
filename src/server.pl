@@ -3,4 +3,4 @@
 :- initialization(start_server).
 
 start_server :-
-    server(8080).
+    server(8000).
