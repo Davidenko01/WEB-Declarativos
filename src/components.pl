@@ -48,14 +48,13 @@ pagina_carrera -->
                   [ div([class='side'],
                         [ h2([], [
                             'Lado Inicial ',
-                            span([id='linterna-izquierda'], ''),  % <-- Agrega este
-                            span([id='linterna'], 'Linterna')     % (puedes quitar este si no lo usas)
+                            span([id='linterna-izquierda'], '')  % <-- Agrega este
                           ]),
                           \lista_personajes(inicial)
                         ]),
                     div([class='center'],
                         [ div([class='bridge'], 'PUENTE'),
-                          button([id='cruzar'], 'Cruzar hacia la derecha'),
+                          button([id='cruzar', class='actions boton-cruzar', onclick="cruzarSeleccionados()"], 'Cruzar'),
                           p([class='note'], 'Selecciona 1 o 2 personajes para cruzar')
                         ]),
                     div([class='side'],
