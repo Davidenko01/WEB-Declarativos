@@ -7,7 +7,7 @@
 
 :- use_module(library(http/html_write)).
 :- use_module(library(http/html_head)).
-:- use_module(juguetes).  % Asegurate de tener definidos los personajes en juguetes.pl
+:- use_module(juguetes). 
 
 % Página de inicio con las tarjetas de personajes
 pagina_inicio -->
@@ -34,33 +34,36 @@ pagina_inicio -->
     ).
 
 pagina_carrera -->
-    html([\html_requires(js('script.js')),
+    html([
+        \html_requires(js('script.js')),
         div([class='container'],
             [ h1([class='title'], 'Problema del Cruce del Puente'),
               div([class='top-bar'],
                   [ p([], [strong('Tiempo usado: '), span([id=time], '0'), '/60 minutos']),
                     div([class='actions'],
-                        [ button([id='solucion', onclick="resolver()"], 'Solucion automatica'),
-                          button([onclick="reiniciarJuego()"], 'Reiniciar') % Added onclick for reset
+                        [ button([id='solAuto'], 'Solucion automatica'),
+                          button([id='reiniciar'], 'Reiniciar')
                         ])
                   ]),
               div([class='content'],
                   [ div([class='side'],
-                        [ h2([], ['Lado Inicial ', span([id='linterna'], 'Linterna')]), % Added id='linterna'
+                        [ h2([], ['Lado Inicial ', span([id='linterna-izquierda'], '')]),
                           \lista_personajes(inicial)
                         ]),
                     div([class='center'],
                         [ div([class='bridge'], 'PUENTE'),
-                          button([id='cruzar'], 'Cruzar hacia la derecha'),
+                          button([id='cruzar'], 'Cruzar hacia la derecha ->'),
                           p([class='note'], 'Selecciona 1 o 2 personajes para cruzar')
                         ]),
                     div([class='side'],
-                        [ h2([], 'Lado Final'),
+                        [ h2([], ['Lado Final',span([id='linterna-derecha'], '')]),
                           \lista_personajes(final)
                         ])
-                  ])
+                  ]),     
+              div([id='resultado-solucion'], [])
             ])
     ]).
+
 
 lista_personajes(Lado) -->
     {
@@ -72,14 +75,14 @@ lista_personajes(Lado) -->
         ),
         ( Lado = inicial -> Id = 'lado-inicial' ; Id = 'lado-final' )
     },
-    html(ul([id=Id],
+    html(ul([id=Id], 
         \render_personajes(Personajes, Lado)
     )).
 
 render_personajes([], _) --> [].
 render_personajes([personaje(Id, Nombre, Tiempo)|T], Lado) -->
     {
-
+        true
     },
     html(li([class='personaje', 'data-id'=Id],
              [ span([class='circle'], ''),
@@ -97,6 +100,7 @@ personaje_card(Nombre, Imagen, ColorClass, Texto, Tiempo) -->
               strong([], Tiempo)
             ])
     ).
+
 
 mostrar_movimientos([]) --> [].
 mostrar_movimientos(['b-->'(A,B)|T]) -->

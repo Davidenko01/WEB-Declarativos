@@ -1,4 +1,4 @@
-:- module(juguetes, [movesJuguetes/1]).
+:- module(juguetes, [movesJuguetes/1, validar_paso/8]). 
 :- use_module(library(clpfd)).
 
 %%Tiempo que tarda cada juguete
@@ -39,3 +39,34 @@ moveJuguetes_(state(Ls0,Rs0),TiempoActual, TiempoFinal) -->
      },
 	     ['<--b'(N)],
 	     moveJuguete(state([N|Ls0],Rs1),NuevoTiempo, TiempoFinal).
+
+
+%%Métodos para vetificar las acciones intermedias en la solucion interactiva para prolog Web 
+
+% Paso de ida: van  2 del lado inicial al lado final
+validar_paso(LadoInicial, LadoFinal, Seleccionados, ida, TiempoActual, TiempoNuevo, NuevoLadoInicial, NuevoLadoFinal) :-
+    length(Seleccionados, N),
+    N >= 1, N =< 2,
+    subset(Seleccionados, LadoInicial),
+    maplist(tiempo, Seleccionados, Tiempos),
+    max_list(Tiempos, PasoT),
+    TiempoNuevo #= TiempoActual + PasoT,
+    TiempoNuevo #=< 60,
+    subtract(LadoInicial, Seleccionados, NuevoLadoInicial),
+    append(Seleccionados, LadoFinal, NuevoLadoFinal).
+
+% Paso de vuelta: regresa 1 solo personaje
+validar_paso(LadoInicial, LadoFinal, [Regresa], vuelta, TiempoActual, TiempoNuevo, NuevoLadoInicial, NuevoLadoFinal) :-
+    member(Regresa, LadoFinal),
+    tiempo(Regresa, PasoT),
+    TiempoNuevo #= TiempoActual + PasoT,
+    TiempoNuevo #=< 60,
+    subtract(LadoFinal, [Regresa], NuevoLadoFinal),
+    NuevoLadoInicial = [Regresa | LadoInicial].
+
+
+
+     
+
+
+

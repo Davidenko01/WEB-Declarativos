@@ -12,10 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const ulInicial = document.getElementById('lado-inicial');
   const ulFinal = document.getElementById('lado-final');
+  const btnCruzar = document.getElementById('cruzar');
+  const btnSolAuto = document.getElementById('solAuto');
+  const btnReinicio = document.getElementById('reiniciar');
   const spanTime = document.getElementById('time');
   const spanLinternaIzq = document.getElementById('linterna-izquierda');
   const spanLinternaDer = document.getElementById('linterna-derecha');
-  const btnCruzar = document.getElementById('cruzar');
 
   function bindClicks() {
     // Limpiar eventos para evitar duplicados
@@ -49,43 +51,83 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   btnCruzar.addEventListener('click', () => {
-    if (linterna === 'izquierda') {
-      if (seleccionados.length === 0) {
-        alert('Selecciona 1 o 2 personajes');
-        return;
-      }
-      const tiempoCruce = Math.max(...seleccionados.map(id => tiempos[id]));
-      tiempoTotal += tiempoCruce;
-
-      seleccionados.forEach(id => {
-        const el = document.querySelector(`#lado-inicial .personaje[data-id="${id}"]`);
-        el.classList.remove('seleccionado');
-        ulFinal.appendChild(el);
-      });
-
-      linterna = 'derecha';
-    } else {
-      if (seleccionados.length !== 1) {
-        alert('Selecciona 1 personaje para cruzar de regreso');
-        return;
-      }
-      const tiempoCruce = tiempos[seleccionados[0]];
-      tiempoTotal += tiempoCruce;
-
-      const id = seleccionados[0];
-      const el = document.querySelector(`#lado-final .personaje[data-id="${id}"]`);
-      el.classList.remove('seleccionado');
-      ulInicial.appendChild(el);
-
-      linterna = 'izquierda';
+    if (seleccionados.length === 0 || (linterna === 'izquierda' && seleccionados.length > 2) || (linterna === 'derecha' && seleccionados.length !== 1)) {
+      alert('Selección inválida.');
+      return;
     }
-
-    seleccionados = [];
-    bindClicks();
-    actualizarUI();
-
-    verificarEstado();
+    cruzarPaso();
   });
+
+  function cruzarPaso() {
+    fetch('/validarPaso', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ladoInicial: Array.from(ulInicial.querySelectorAll('.personaje')).map(el => el.dataset.id),
+        ladoFinal: Array.from(ulFinal.querySelectorAll('.personaje')).map(el => el.dataset.id),
+        linterna: linterna,
+        seleccionados: seleccionados,
+        tiempoActual: tiempoTotal
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok) {
+          tiempoTotal = data.tiempoNuevo;
+
+          // Actualizar UI con nuevos lados
+
+          actualizarLado(ulInicial, data.nuevoLadoInicial);
+          actualizarLado(ulFinal, data.nuevoLadoFinal);
+
+          linterna = linterna === 'izquierda' ? 'derecha' : 'izquierda';
+          seleccionados = [];
+          bindClicks();
+          actualizarUI();
+          verificarEstado();
+
+        } else {
+          alert('Paso inválido o tiempo excedido.');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Error de validación.');
+      });
+  }
+
+
+  function actualizarLado(contenedor, ids) {
+    contenedor.innerHTML = '';
+
+    ids.forEach(id => {
+      const nuevo = document.createElement('li');
+      nuevo.className = 'personaje';
+      nuevo.dataset.id = id;
+
+      const circle = document.createElement('span');
+      circle.className = 'circle';
+      circle.textContent = '';
+
+      const nombre = document.createElement('span');
+      nombre.className = 'nombre';
+      nombre.textContent = id.charAt(0).toUpperCase() + id.slice(1);
+
+      const tiempo = document.createElement('span');
+      tiempo.className = 'tiempo';
+      tiempo.textContent = tiempos[id] + ' minutos';
+
+      nuevo.appendChild(circle);
+      nuevo.appendChild(nombre);
+      nuevo.appendChild(tiempo);
+
+      contenedor.appendChild(nuevo);
+    });
+  }
+
+
 
   function actualizarUI() {
     spanTime.textContent = tiempoTotal;
@@ -96,7 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Cambiar texto del botón según la posición de la linterna
     btnCruzar.textContent = linterna === 'izquierda' ? 'Cruzar a la derecha' : 'Cruzar a la izquierda';
-}
+  }
+
 
   function verificarEstado() {
     const personajesEnFinal = ulFinal.querySelectorAll('.personaje').length;
@@ -105,10 +148,55 @@ document.addEventListener('DOMContentLoaded', () => {
     if (personajesEnFinal === totalPersonajes) {
       // Todos cruzaron
       if (tiempoTotal <= 60) {
-        alert('¡HAZ GANADO! Todos cruzaron en ' + tiempoTotal + ' minutos.');
+        alert('¡HAS GANADO! Todos cruzaron en ' + tiempoTotal + ' minutos.');
       } else {
-        alert('Perdiste, se pasó del tiempo máximo (60 minutos). Tiempo total: ' + tiempoTotal);
+        alert('¡PERDISTE!, se pasó del tiempo máximo (60 minutos). Tiempo total: ' + tiempoTotal);
       }
     }
   }
+
+
+  //Manejo de la solución automática utilizando el programa realizado en el TPO1
+  btnSolAuto.addEventListener('click', () => {
+    resolver();
+  });
+
+  function resolver() {
+    fetch('/solCarrera')
+      .then(response => {
+        if (!response.ok) throw new Error("Error al obtener la solución.");
+        return response.text();  // Recibe HTML generado por mostrar_movimientos//1
+      })
+      .then(html => {
+        document.getElementById('resultado-solucion').innerHTML = html;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('No se pudo obtener la solución.');
+      });
+  }
+
+
+  btnReinicio.addEventListener('click', () => {
+    reinicio();
+  });
+
+
+  function reinicio() {
+    // Opción fuerte: recarga limpia con sincronización backend
+    fetch('/reiniciarJuego', { method: 'POST' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.exito) {
+          location.reload(); // recarga total del DOM y del estado JS
+        } else {
+          alert('No se pudo reiniciar el juego');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Error al reiniciar el juego');
+      });
+  }
+
 });
