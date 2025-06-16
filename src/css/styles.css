@@ -137,28 +137,6 @@ body {
   transform: translateY(2px);
 }
 
-.boton-cruzar {
-  background-color: #a8f0a5; /* Verde pastel */
-  color: #1a1b26;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 5px;
-  font-family: inherit;
-  font-weight: bold;
-  font-size: 0.9em;
-  cursor: pointer;
-  transition: 0.3s;
-  box-shadow: 0 4px 0 #7ccc75, 0 5px 10px rgba(0, 0, 0, 0.3);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-
-.boton-cruzar:hover {
-  background-color: #92e492;
-  transform: translateY(2px);
-}
-
 /* === Página de cruce del puente === */
 .top-bar {
   display: flex;
@@ -265,7 +243,8 @@ ul {
 }
 
 /* === Movimientos mostrados === */
-h3, h4 {
+h3,
+h4 {
   margin: 10px 0 5px;
   text-shadow: 1px 1px #000;
 }
@@ -284,4 +263,18 @@ h4 {
   font-weight: bold;
 }
 
+.center button {
+  margin-bottom: 15px;
+  padding: 9px 9px;
+  font-family: inherit;
+  background-color: #2e37df;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
 
+.center button:hover {
+  background-color: #342488;
+}
