@@ -7,7 +7,7 @@
 
 :- use_module(library(http/html_write)).
 :- use_module(library(http/html_head)).
-:- use_module(juguetes).  % Asegurate de tener definidos los personajes en juguetes.pl
+:- use_module(juguetes). 
 
 % Página de inicio con las tarjetas de personajes
 pagina_inicio -->
@@ -34,39 +34,36 @@ pagina_inicio -->
     ).
 
 pagina_carrera -->
-    html([\html_requires(js('script.js')),
+    html([
+        \html_requires(js('script.js')),
         div([class='container'],
             [ h1([class='title'], 'Problema del Cruce del Puente'),
               div([class='top-bar'],
                   [ p([], [strong('Tiempo usado: '), span([id=time], '0'), '/60 minutos']),
                     div([class='actions'],
-                        [ button([id='solucion', onclick="resolver()"], 'Solucion automatica'),
-                          button([id='reiniciar', onclick="reiniciar()"], 'Reiniciar') % Added onclick for reset
+                        [ button([id='solAuto'], 'Solucion automatica'),
+                          button([id='reiniciar'], 'Reiniciar')
                         ])
                   ]),
               div([class='content'],
                   [ div([class='side'],
-                        [ h2([], [
-                            'Lado Inicial ',
-                            span([id='linterna-izquierda'], '')  % <-- Agrega este
-                          ]),
+                        [ h2([], ['Lado Inicial ', span([id='linterna-izquierda'], '')]),
                           \lista_personajes(inicial)
                         ]),
                     div([class='center'],
                         [ div([class='bridge'], 'PUENTE'),
-                          button([id='cruzar', class='actions boton-cruzar', onclick="cruzarSeleccionados()"], 'Cruzar'),
+                          button([id='cruzar'], 'Cruzar hacia la derecha ->'),
                           p([class='note'], 'Selecciona 1 o 2 personajes para cruzar')
                         ]),
                     div([class='side'],
-                        [ h2([], [
-                            'Lado Final ',
-                            span([id='linterna-derecha'], '')     % <-- Agrega este
-                          ]),
+                        [ h2([], ['Lado Final',span([id='linterna-derecha'], '')]),
                           \lista_personajes(final)
                         ])
-                  ])
+                  ]),     
+              div([id='resultado-solucion'], [])
             ])
     ]).
+
 
 lista_personajes(Lado) -->
     {
@@ -78,10 +75,9 @@ lista_personajes(Lado) -->
     )).
 
 render_personajes([], _) --> [].
-render_personajes([personaje(Id, Nombre, Tiempo)|T], Lado) --> % Modified to accept Lado for filtering
+render_personajes([personaje(Id, Nombre, Tiempo)|T], Lado) --> 
     {
-        % Only render characters that are on the initial side initially
-        (Lado = inicial, member(Id, [buzz,woody,rex,hamm])) ; (Lado = final, fail) % Initially final side is empty
+        (Lado = inicial, member(Id, [buzz,woody,rex,hamm])) ; (Lado = final, fail) 
     },
     html(li([class='personaje', 'data-id'=Id],
              [ span([class='circle'], ''),
@@ -99,6 +95,7 @@ personaje_card(Nombre, Imagen, ColorClass, Texto, Tiempo) -->
               strong([], Tiempo)
             ])
     ).
+
 
 mostrar_movimientos([]) --> [].
 mostrar_movimientos(['b-->'(A,B)|T]) -->
