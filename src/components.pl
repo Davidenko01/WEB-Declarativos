@@ -64,7 +64,12 @@ pagina_carrera -->
 
 lista_personajes(Lado) -->
     {
-        personajes(Personajes),
+        personajes(AllPersonajes),
+        ( Lado = inicial -> 
+            findall(P, (member(P, AllPersonajes), P = personaje(Id,_,_), member(Id, [buzz,woody,rex,hamm])), Personajes)
+        ; 
+            findall(P, (member(P, AllPersonajes), P = personaje(Id,_,_), \+ member(Id, [buzz,woody,rex,hamm])), Personajes)
+        ),
         ( Lado = inicial -> Id = 'lado-inicial' ; Id = 'lado-final' )
     },
     html(ul([id=Id],
@@ -72,10 +77,9 @@ lista_personajes(Lado) -->
     )).
 
 render_personajes([], _) --> [].
-render_personajes([personaje(Id, Nombre, Tiempo)|T], Lado) --> % Modified to accept Lado for filtering
+render_personajes([personaje(Id, Nombre, Tiempo)|T], Lado) -->
     {
-        % Only render characters that are on the initial side initially
-        (Lado = inicial, member(Id, [buzz,woody,rex,hamm])) ; (Lado = final, fail) % Initially final side is empty
+
     },
     html(li([class='personaje', 'data-id'=Id],
              [ span([class='circle'], ''),
