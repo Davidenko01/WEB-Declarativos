@@ -89,7 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
           verificarEstado();
 
         } else {
-          alert('Paso inválido o tiempo excedido.');
+          alert('¡PERDISTE!, se agoto el tiempo límite ¡Zurg ha vencido!.');
+          reinicio();
         }
       })
       .catch(err => {
@@ -150,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (tiempoTotal <= 60) {
         alert('¡HAS GANADO! Todos cruzaron en ' + tiempoTotal + ' minutos.');
       } else {
-        alert('¡PERDISTE!, se pasó del tiempo máximo (60 minutos). Tiempo total: ' + tiempoTotal);
+        alert('¡PERDISTE!, se agoto el tiempo límite ¡Zurg ha vencido!.');
       }
     }
   }

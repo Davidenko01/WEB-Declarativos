@@ -18,20 +18,33 @@ pagina_inicio -->
     },
     html(
         div([class='container'],
-            [ h1([class='title'], 'ESCAPA POR EL PUENTE!'),
+            [ h1([class='title'], '¡ESCAPA POR EL PUENTE!'),
               p([class='description'],
-                'ESCAPA DE ZURG! CUIDADO, EL PUENTE ES OSCURO Y MUY DEBIL'),
+                '¡ESCAPA DE ZURG! CUIDADO, EL PUENTE ES OSCURO Y MUY DÉBIL. ¡USA LA LINTERNA CON SABIDURÍA!'),
+
+              div([class='rules-box'],
+                  [ h3([], 'Reglas del juego:'),
+                    ul([class='rules'],
+                       [ li([], 'Solo pueden cruzar dos juguetes al mismo tiempo.'),
+                         li([], 'Necesitan una linterna para cruzar el puente.'),
+                         li([], 'Alguien debe regresar con la linterna tras cada cruce.'),
+                         li([], 'El tiempo de cruce es el del juguete más lento del par.'),
+                         li([], 'La linterna solo dura 60 minutos en total.'),
+                         li([], '¡Cruza a todos antes de que se agote el tiempo o Zurg los atrapará!')
+                       ])
+                  ]),
               h2([class='subtitle'], 'JUGUETES DE ANDY:'),
               div([class='characters-container'],
-                  [ \personaje_card('woody', WoodyPath, 'woody-color', 'EL SHERIFF', '10 minutos'),
-                    \personaje_card('buzz', BuzzPath, 'buzz-color', 'EL GUARDIÁN DEL ESPACIO', '5 minutos'),
-                    \personaje_card('hamm', HammPath, 'hamm-color', 'ALGO ANDA MAL...', '25 minutos'),
-                    \personaje_card('rex', RexPath, 'rex-color', 'EL T-REX', '20 minutos')
+                  [ \personaje_card('Woody', WoodyPath, 'woody-color', 'RÁPIDO', '10 minutos'),
+                    \personaje_card('Buzz', BuzzPath, 'buzz-color', 'MUY RÁPIDO', '5 minutos'),
+                    \personaje_card('Hamm', HammPath, 'hamm-color', 'MUY LENTO', '25 minutos'),
+                    \personaje_card('Rex', RexPath, 'rex-color', 'LENTO', '20 minutos')
                   ]),
               div([style='margin-top: 45px;'],
                   a([href='/carrera', class='button'], 'JUGAR'))
             ])
     ).
+
 
 pagina_carrera -->
     html([
