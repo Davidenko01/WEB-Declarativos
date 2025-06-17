@@ -12,7 +12,7 @@
 server(Port) :-
     http_server(http_dispatch, [port(Port)]).
 
-% Rutas
+% Rutas utilizadas por el servidor HTTP
 :- http_handler(root(.), inicio_handler, []).
 :- http_handler(root(carrera), carrera, []).
 :- http_handler(root(solCarrera), solAutomatica, []).
@@ -22,10 +22,10 @@ server(Port) :-
 :- http_handler('/css/', serve_files_in('css'), [prefix]).
 :- http_handler('/html/', serve_files_in('html'), [prefix]).
 :- http_handler('/js/', serve_files_in('js'), [prefix]).
-
+% Manejo de archivos estáticos
 serve_files_in(Dir, Request) :-
     http_reply_from_files(Dir, [], Request).
-
+% Página de inicio
 inicio_handler(_Request) :-
     reply_html_page(
         [ 
@@ -39,7 +39,7 @@ inicio_handler(_Request) :-
         ]
     ).
 
-
+% Página de carrera
 carrera(_Request) :-
     reply_html_page(
         [ 
@@ -53,14 +53,14 @@ carrera(_Request) :-
         ]
     ).
 
-
+% Solución automática
 solAutomatica(_Request) :-
     movesJuguetes(Sol),
     phrase(mostrar_movimientos(Sol), HTMLTokens),
     print_html(HTMLTokens).
     
 
-
+% Valida el paso de los juguetes
 validar_paso_handler(Request) :-
     http_read_json_dict(Request, Dict),
     

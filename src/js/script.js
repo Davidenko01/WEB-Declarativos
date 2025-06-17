@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     rex: 20,
     hamm: 25
   };
-
+  // Inicializar las constantes locales de la UI
   const ulInicial = document.getElementById('lado-inicial');
   const ulFinal = document.getElementById('lado-final');
   const btnCruzar = document.getElementById('cruzar');
@@ -19,25 +19,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const spanLinternaIzq = document.getElementById('linterna-izquierda');
   const spanLinternaDer = document.getElementById('linterna-derecha');
 
+  
   function bindClicks() {
     // Limpiar eventos para evitar duplicados
     document.querySelectorAll('.personaje').forEach(el => {
       el.replaceWith(el.cloneNode(true));
     });
 
-    if (linterna === 'izquierda') {
+    if (linterna === 'izquierda') {// Lado inicial
       document.querySelectorAll('#lado-inicial .personaje').forEach(el => {
         el.addEventListener('click', () => toggleSeleccion(el, 2));
       });
-    } else {
+    } else { // Lado final
       document.querySelectorAll('#lado-final .personaje').forEach(el => {
         el.addEventListener('click', () => toggleSeleccion(el, 1));
       });
     }
   }
   bindClicks();
-
-  function toggleSeleccion(el, maxSeleccionados) {
+// Inicializar UI 
+  function toggleSeleccion(el, maxSeleccionados) {// Maneja la selección de personajes
     const id = el.dataset.id;
     if (el.classList.contains('seleccionado')) {
       el.classList.remove('seleccionado');
@@ -50,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  btnCruzar.addEventListener('click', () => {
+  btnCruzar.addEventListener('click', () => {// Maneja el cruce de personajes
     if (seleccionados.length === 0 || (linterna === 'izquierda' && seleccionados.length > 2) || (linterna === 'derecha' && seleccionados.length !== 1)) {
       alert('Selección inválida.');
       return;
@@ -58,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cruzarPaso();
   });
 
-  function cruzarPaso() {
+  function cruzarPaso() {// Envía los datos al servidor para validar el cruce
     fetch('/validarPaso', {
       method: 'POST',
       headers: {
@@ -99,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
-
+// Actualizar el lado inicial y final con los personajes seleccionados
   function actualizarLado(contenedor, ids) {
     contenedor.innerHTML = '';
 
@@ -141,7 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
     btnCruzar.textContent = linterna === 'izquierda' ? 'Cruzar a la derecha' : 'Cruzar a la izquierda';
   }
 
-
+// Verificar si todos los personajes han cruzado
+  // y mostrar mensaje de victoria o derrota
   function verificarEstado() {
     const personajesEnFinal = ulFinal.querySelectorAll('.personaje').length;
     const totalPersonajes = Object.keys(tiempos).length;

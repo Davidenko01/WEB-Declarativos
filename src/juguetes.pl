@@ -46,7 +46,7 @@ moveJuguetes_(state(Ls0,Rs0),TiempoActual, TiempoFinal) -->
 % Paso de ida: van  2 del lado inicial al lado final
 validar_paso(LadoInicial, LadoFinal, Seleccionados, ida, TiempoActual, TiempoNuevo, NuevoLadoInicial, NuevoLadoFinal) :-
     length(Seleccionados, N),
-    N >= 1, N =< 2,
+    N >= 1, N =< 2, % Deben seleccionarse 1 o 2 personajes
     subset(Seleccionados, LadoInicial),
     maplist(tiempo, Seleccionados, Tiempos),
     max_list(Tiempos, PasoT),
